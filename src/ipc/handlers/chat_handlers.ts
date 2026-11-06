@@ -8,7 +8,7 @@ import * as fs from "fs";
 import { createLoggedHandler } from "./safe_handle";
 
 import log from "electron-log";
-import { getDyadAppPath } from "../../paths/paths";
+import { getGearAppPath } from "../../paths/paths";
 import { UpdateChatParams } from "../ipc_types";
 
 const logger = log.scope("chat_handlers");
@@ -33,7 +33,7 @@ export function registerChatHandlers() {
       // Get the current git revision of main branch
       initialCommitHash = await git.resolveRef({
         fs,
-        dir: getDyadAppPath(app.path),
+        dir: getGearAppPath(app.path),
         ref: "main",
       });
     } catch (error) {

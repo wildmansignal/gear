@@ -11,13 +11,13 @@ import {
 import { CodeHighlight } from "./CodeHighlight";
 import { CustomTagState } from "./stateTypes";
 
-interface DyadExecuteSqlProps {
+interface GearExecuteSqlProps {
   children?: ReactNode;
   node?: any;
   description?: string;
 }
 
-export const DyadExecuteSql: React.FC<DyadExecuteSqlProps> = ({
+export const GearExecuteSql: React.FC<GearExecuteSqlProps> = ({
   children,
   node,
   description,

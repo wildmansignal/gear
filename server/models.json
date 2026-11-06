@@ -1,0 +1,10 @@
+{
+  "_comment": "Override which OpenRouter model each Gear model name maps to. Keys the app sends: dyad/auto, dyad/free, dyad/turbo, dyad/value, dyad/gpt-5*, plus <provider-prefix>/<model> for other providers. Edit and restart the gateway.",
+  "aliases": {
+    "dyad/auto": "anthropic/claude-sonnet-4.5",
+    "dyad/free": "qwen/qwen3-coder:free",
+    "dyad/turbo": "x-ai/grok-code-fast-1",
+    "dyad/value": "z-ai/glm-4.6",
+    "gear-help": "google/gemini-2.5-flash"
+  }
+}

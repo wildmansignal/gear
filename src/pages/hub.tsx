@@ -6,7 +6,6 @@ import { useSettings } from "@/hooks/useSettings";
 import { useTemplates } from "@/hooks/useTemplates";
 import { TemplateCard } from "@/components/TemplateCard";
 import { CreateAppDialog } from "@/components/CreateAppDialog";
-import { NeonConnector } from "@/components/NeonConnector";
 
 const HubPage: React.FC = () => {
   const router = useRouter();
@@ -115,7 +114,6 @@ function BackendSection() {
       </header>
 
       <div className="grid grid-cols-1 gap-6">
-        <NeonConnector />
       </div>
     </div>
   );

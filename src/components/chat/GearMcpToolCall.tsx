@@ -2,12 +2,12 @@ import React, { useMemo, useState } from "react";
 import { Wrench, ChevronsUpDown, ChevronsDownUp } from "lucide-react";
 import { CodeHighlight } from "./CodeHighlight";
 
-interface DyadMcpToolCallProps {
+interface GearMcpToolCallProps {
   node?: any;
   children?: React.ReactNode;
 }
 
-export const DyadMcpToolCall: React.FC<DyadMcpToolCallProps> = ({
+export const GearMcpToolCall: React.FC<GearMcpToolCallProps> = ({
   node,
   children,
 }) => {

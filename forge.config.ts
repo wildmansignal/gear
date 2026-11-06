@@ -1,6 +1,7 @@
 import type { ForgeConfig } from "@electron-forge/shared-types";
 import { MakerSquirrel } from "@electron-forge/maker-squirrel";
 import { MakerZIP } from "@electron-forge/maker-zip";
+import { MakerDMG } from "@electron-forge/maker-dmg";
 import { MakerDeb } from "@electron-forge/maker-deb";
 import { MakerRpm } from "@electron-forge/maker-rpm";
 import { VitePlugin } from "@electron-forge/plugin-vite";
@@ -48,30 +49,41 @@ const ignore = (file: string) => {
   return true;
 };
 
+const canSignMac = Boolean(
+  process.env.APPLE_ID &&
+    process.env.APPLE_PASSWORD &&
+    process.env.APPLE_TEAM_ID,
+);
 const isEndToEndTestBuild = process.env.E2E_TEST_BUILD === "true";
 
 const config: ForgeConfig = {
   packagerConfig: {
     protocols: [
       {
-        name: "Dyad",
-        schemes: ["dyad"],
+        name: "Gear",
+        schemes: ["gear"],
       },
     ],
+    appBundleId: "com.danplants.gear",
     icon: "./assets/icon/logo",
 
-    osxSign: isEndToEndTestBuild
-      ? undefined
-      : {
-          identity: process.env.APPLE_TEAM_ID,
-        },
-    osxNotarize: isEndToEndTestBuild
-      ? undefined
-      : {
-          appleId: process.env.APPLE_ID!,
-          appleIdPassword: process.env.APPLE_PASSWORD!,
-          teamId: process.env.APPLE_TEAM_ID!,
-        },
+    // Signing + notarization only run when Apple credentials are present
+    // (APPLE_ID, APPLE_PASSWORD, APPLE_TEAM_ID). Without them the build is
+    // unsigned: it runs, but macOS shows a Gatekeeper warning on first open.
+    osxSign:
+      isEndToEndTestBuild || !canSignMac
+        ? undefined
+        : {
+            identity: process.env.APPLE_TEAM_ID,
+          },
+    osxNotarize:
+      isEndToEndTestBuild || !canSignMac
+        ? undefined
+        : {
+            appleId: process.env.APPLE_ID!,
+            appleIdPassword: process.env.APPLE_PASSWORD!,
+            teamId: process.env.APPLE_TEAM_ID!,
+          },
     asar: true,
     ignore,
     // ignore: [/node_modules\/(?!(better-sqlite3|bindings|file-uri-to-path)\/)/],
@@ -82,13 +94,16 @@ const config: ForgeConfig = {
   },
   makers: [
     new MakerSquirrel({
-      signWithParams: `/sha1 ${process.env.SM_CODE_SIGNING_CERT_SHA1_HASH} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256`,
+      signWithParams: process.env.SM_CODE_SIGNING_CERT_SHA1_HASH
+        ? `/sha1 ${process.env.SM_CODE_SIGNING_CERT_SHA1_HASH} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256`
+        : undefined,
     }),
     new MakerZIP({}, ["darwin"]),
+    new MakerDMG({ format: "ULFO" }, ["darwin"]),
     new MakerRpm({}),
     new MakerDeb({
       options: {
-        mimeType: ["x-scheme-handler/dyad"],
+        mimeType: ["x-scheme-handler/gear"],
       },
     }),
   ],
@@ -97,12 +112,12 @@ const config: ForgeConfig = {
       name: "@electron-forge/publisher-github",
       config: {
         repository: {
-          owner: "dyad-sh",
-          name: "dyad",
+          owner: "wildmansignal",
+          name: "gear",
         },
         draft: true,
         force: true,
-        prerelease: true,
+        prerelease: false,
       },
     },
   ],

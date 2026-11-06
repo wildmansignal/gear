@@ -4,7 +4,7 @@ import { AppUpgrade } from "../ipc_types";
 import { db } from "../../db";
 import { apps } from "../../db/schema";
 import { eq } from "drizzle-orm";
-import { getDyadAppPath } from "../../paths/paths";
+import { getGearAppPath } from "../../paths/paths";
 import fs from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
@@ -19,15 +19,15 @@ const availableUpgrades: Omit<AppUpgrade, "isNeeded">[] = [
     id: "component-tagger",
     title: "Enable select component to edit",
     description:
-      "Installs the Dyad component tagger Vite plugin and its dependencies.",
-    manualUpgradeUrl: "https://dyad.sh/docs/upgrades/select-component",
+      "Installs the Gear component tagger Vite plugin and its dependencies.",
+    manualUpgradeUrl: "https://danplants.com/gear#help",
   },
   {
     id: "capacitor",
     title: "Upgrade to hybrid mobile app with Capacitor",
     description:
       "Adds Capacitor to your app lets it run on iOS and Android in addition to the web.",
-    manualUpgradeUrl: "https://dyad.sh/docs/guides/mobile-app#upgrade-your-app",
+    manualUpgradeUrl: "https://danplants.com/gear#help",
   },
 ];
 
@@ -184,7 +184,7 @@ async function applyComponentTagger(appPath: string) {
     await gitAddAll({ path: appPath });
     await gitCommit({
       path: appPath,
-      message: "[dyad] add Dyad component tagger",
+      message: "[dyad] add Gear component tagger",
     });
     logger.info("Successfully committed changes");
   } catch (err) {
@@ -253,7 +253,7 @@ export function registerAppUpgradeHandlers() {
     "get-app-upgrades",
     async (_, { appId }: { appId: number }): Promise<AppUpgrade[]> => {
       const app = await getApp(appId);
-      const appPath = getDyadAppPath(app.path);
+      const appPath = getGearAppPath(app.path);
 
       const upgradesWithStatus = availableUpgrades.map((upgrade) => {
         let isNeeded = false;
@@ -277,7 +277,7 @@ export function registerAppUpgradeHandlers() {
       }
 
       const app = await getApp(appId);
-      const appPath = getDyadAppPath(app.path);
+      const appPath = getGearAppPath(app.path);
 
       if (upgradeId === "component-tagger") {
         await applyComponentTagger(appPath);

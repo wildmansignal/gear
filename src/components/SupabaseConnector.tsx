@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { Label } from "@/components/ui/label";
@@ -29,10 +30,6 @@ import { useDeepLink } from "@/contexts/DeepLinkContext";
 import supabaseLogoLight from "../../assets/supabase/supabase-logo-wordmark--light.svg";
 // @ts-ignore
 import supabaseLogoDark from "../../assets/supabase/supabase-logo-wordmark--dark.svg";
-// @ts-ignore
-import connectSupabaseDark from "../../assets/supabase/connect-supabase-dark.svg";
-// @ts-ignore
-import connectSupabaseLight from "../../assets/supabase/connect-supabase-light.svg";
 
 import { ExternalLink } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -260,24 +257,72 @@ export function SupabaseConnector({ appId }: { appId: number }) {
       <div className="flex flex-col md:flex-row items-center justify-between">
         <h2 className="text-lg font-medium">Integrations</h2>
         <img
-          onClick={async () => {
-            if (settings?.isTestMode) {
-              await IpcClient.getInstance().fakeHandleSupabaseConnect({
-                appId,
-                fakeProjectId: "fake-project-id",
-              });
-            } else {
-              await IpcClient.getInstance().openExternalUrl(
-                "https://supabase-oauth.dyad.sh/api/connect-supabase/login",
-              );
-            }
-          }}
-          src={isDarkMode ? connectSupabaseDark : connectSupabaseLight}
-          alt="Connect to Supabase"
-          className="w-full h-10 min-h-8 min-w-20 cursor-pointer"
-          data-testid="connect-supabase-button"
-          // className="h-10"
+          src={isDarkMode ? supabaseLogoDark : supabaseLogoLight}
+          alt="Supabase"
+          className="h-6"
         />
+      </div>
+      <SupabaseTokenForm />
+    </div>
+  );
+}
+
+/**
+ * Gear connects to Supabase with a personal access token (sbp_...) instead of
+ * an OAuth broker, so nothing sits between the user and their own account.
+ */
+function SupabaseTokenForm() {
+  const { updateSettings } = useSettings();
+  const [token, setToken] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const connect = async () => {
+    const value = token.trim();
+    if (!value) return;
+    setSaving(true);
+    try {
+      await updateSettings({ supabase: { accessToken: { value } } });
+      setToken("");
+      toast.success("Supabase connected");
+    } catch (e) {
+      toast.error(`Could not save token: ${(e as Error).message}`);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        Paste a Supabase personal access token to connect your projects (auth,
+        database, storage).{" "}
+        <a
+          className="text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+          onClick={() =>
+            IpcClient.getInstance().openExternalUrl(
+              "https://supabase.com/dashboard/account/tokens",
+            )
+          }
+        >
+          Create one in your Supabase account
+        </a>
+        . The token is stored only on this machine.
+      </p>
+      <div className="flex gap-2">
+        <Input
+          type="password"
+          placeholder="sbp_..."
+          value={token}
+          onChange={(e) => setToken(e.target.value)}
+          data-testid="supabase-token-input"
+        />
+        <Button
+          onClick={connect}
+          disabled={!token.trim() || saving}
+          data-testid="connect-supabase-button"
+        >
+          {saving ? "Connecting..." : "Connect"}
+        </Button>
       </div>
     </div>
   );

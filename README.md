@@ -1,29 +1,32 @@
-# Dyad
+# Gear
 
-Dyad is a local, open-source AI app builder. It's fast, private, and fully under your control — like Lovable, v0, or Bolt, but running right on your machine.
+Build your own software with AI, on your own machine.
 
-[![Image](https://github.com/user-attachments/assets/f6c83dfc-6ffd-4d32-93dd-4b9c46d17790)](http://dyad.sh/)
+Gear is a desktop app (Mac, Windows, Linux) that turns a plain-English prompt into a working web app, then keeps editing it with you. The code lives on your computer. Bring your own AI keys, or use a Gear Pro key and skip the setup.
 
-More info at: [http://dyad.sh/](http://dyad.sh/)
+Sold at https://danplants.com/gear.
 
-## 🚀 Features
+## Run it from source
 
-- ⚡️ **Local**: Fast, private and no lock-in.
-- 🛠 **Bring your own keys**: Use your own AI API keys — no vendor lock-in.
-- 🖥️ **Cross-platform**: Easy to run on Mac or Windows.
+```bash
+npm ci
+npm start
+```
 
-## 📦 Download
+Requires Node 20 or newer.
 
-No sign-up required. Just download and go.
+## Build installers
 
-### [👉 Download for your platform](https://www.dyad.sh/#download)
+```bash
+npm run make
+```
 
-## 🤝 Community
+Output lands in `out/make/` (DMG + ZIP on Mac, Squirrel installer on Windows, deb/rpm on Linux). Mac builds are signed and notarized only when `APPLE_ID`, `APPLE_PASSWORD` and `APPLE_TEAM_ID` are set in the environment. See `GEAR.md` for the release checklist.
 
-Join our growing community of AI app builders on **Reddit**: [r/dyadbuilders](https://www.reddit.com/r/dyadbuilders/) - share your projects and get help from the community!
+## Gear Pro gateway
 
-## 🛠️ Contributing
+`server/` holds the gateway that serves Gear Pro keys: an OpenAI-compatible proxy in front of OpenRouter with per-key monthly budgets, Stripe subscription webhooks and key delivery by email. See `server/README.md`.
 
-**Dyad** is open-source (Apache 2.0 licensed).
+## License
 
-If you're interested in contributing to dyad, please read our [contributing](./CONTRIBUTING.md) doc.
+Gear is a modified version of [Dyad](https://github.com/dyad-sh/dyad) v0.26.0, used under the Apache License 2.0. See `LICENSE`, `NOTICE` and `CHANGES.md`.

@@ -38,15 +38,17 @@ export async function refreshSupabaseToken(): Promise<void> {
   }
 
   if (!refreshToken) {
-    throw new Error(
-      "Supabase refresh token not found. Please authenticate first.",
+    // Personal access tokens (sbp_...) never expire and have no refresh token.
+    logger.info(
+      "No Supabase refresh token; treating access token as long-lived",
     );
+    return;
   }
 
   try {
     // Make request to Supabase refresh endpoint
     const response = await fetch(
-      "https://supabase-oauth.dyad.sh/api/connect-supabase/refresh",
+      "https://danplants.com/gear/api/supabase/refresh",
       {
         method: "POST",
         headers: {
@@ -101,8 +103,8 @@ export async function getSupabaseClient(): Promise<SupabaseManagementAPI> {
     );
   }
 
-  // Check if token needs refreshing
-  if (isTokenExpired(expiresIn)) {
+  // Check if token needs refreshing (only OAuth tokens carry a refresh token)
+  if (settings.supabase?.refreshToken?.value && isTokenExpired(expiresIn)) {
     await withLock("refresh-supabase-token", refreshSupabaseToken);
     // Get updated settings after refresh
     const updatedSettings = readSettings();

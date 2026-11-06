@@ -5,7 +5,7 @@ import git, { clone } from "isomorphic-git";
 import http from "isomorphic-git/http/node";
 import * as schema from "../../db/schema";
 import fs from "node:fs";
-import { getDyadAppPath } from "../../paths/paths";
+import { getGearAppPath } from "../../paths/paths";
 import { db } from "../../db";
 import { apps } from "../../db/schema";
 import type { CloneRepoParams, CloneRepoReturnType } from "@/ipc/ipc_types";
@@ -567,7 +567,7 @@ async function handlePushToGithub(
     if (!app || !app.githubOrg || !app.githubRepo) {
       return { success: false, error: "App is not linked to a GitHub repo." };
     }
-    const appPath = getDyadAppPath(app.path);
+    const appPath = getGearAppPath(app.path);
     const branch = app.githubBranch || "main";
 
     // Set up remote URL with token
@@ -672,7 +672,7 @@ async function handleCloneRepoFromUrl(
       return { error: `An app named "${finalAppName}" already exists.` };
     }
 
-    const appPath = getDyadAppPath(finalAppName);
+    const appPath = getGearAppPath(finalAppName);
     if (!fs.existsSync(appPath)) {
       fs.mkdirSync(appPath, { recursive: true });
     }

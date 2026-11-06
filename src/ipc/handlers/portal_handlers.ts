@@ -3,7 +3,7 @@ import log from "electron-log";
 import { db } from "../../db";
 import { apps } from "../../db/schema";
 import { eq } from "drizzle-orm";
-import { getDyadAppPath } from "../../paths/paths";
+import { getGearAppPath } from "../../paths/paths";
 import { spawn } from "child_process";
 import fs from "node:fs";
 import git from "isomorphic-git";
@@ -28,7 +28,7 @@ export function registerPortalHandlers() {
     "portal:migrate-create",
     async (_, { appId }: { appId: number }): Promise<{ output: string }> => {
       const app = await getApp(appId);
-      const appPath = getDyadAppPath(app.path);
+      const appPath = getGearAppPath(app.path);
 
       // Run the migration command
       const migrationOutput = await new Promise<string>((resolve, reject) => {

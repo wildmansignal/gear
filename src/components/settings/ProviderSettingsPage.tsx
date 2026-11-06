@@ -55,22 +55,22 @@ export function ProviderSettingsPage({ provider }: ProviderSettingsPageProps) {
   const supportsCustomModels =
     providerData?.type === "custom" || providerData?.type === "cloud";
 
-  const isDyad = provider === "auto";
+  const isGear = provider === "auto";
 
   const [apiKeyInput, setApiKeyInput] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const router = useRouter();
 
-  // Use fetched data (or defaults for Dyad)
-  const providerDisplayName = isDyad
-    ? "Dyad"
+  // Use fetched data (or defaults for Gear)
+  const providerDisplayName = isGear
+    ? "Gear"
     : (providerData?.name ?? "Unknown Provider");
-  const providerWebsiteUrl = isDyad
-    ? "https://academy.dyad.sh/settings"
+  const providerWebsiteUrl = isGear
+    ? "https://danplants.com/gear#pro"
     : providerData?.websiteUrl;
-  const hasFreeTier = isDyad ? false : providerData?.hasFreeTier;
-  const envVarName = isDyad ? undefined : providerData?.envVarName;
+  const hasFreeTier = isGear ? false : providerData?.hasFreeTier;
+  const envVarName = isGear ? undefined : providerData?.envVarName;
 
   // Use provider ID (which is the 'provider' prop)
   const userApiKey = settings?.providerSettings?.[provider]?.apiKey?.value;
@@ -137,8 +137,8 @@ export function ProviderSettingsPage({ provider }: ProviderSettingsPageProps) {
           },
         },
       };
-      if (isDyad) {
-        settingsUpdate.enableDyadPro = true;
+      if (isGear) {
+        settingsUpdate.enableGearPro = true;
       }
       await updateSettings(settingsUpdate);
       setApiKeyInput(""); // Clear input on success
@@ -174,15 +174,15 @@ export function ProviderSettingsPage({ provider }: ProviderSettingsPageProps) {
     }
   };
 
-  // --- Toggle Dyad Pro Handler ---
-  const handleToggleDyadPro = async (enabled: boolean) => {
+  // --- Toggle Gear Pro Handler ---
+  const handleToggleGearPro = async (enabled: boolean) => {
     setIsSaving(true);
     try {
       await updateSettings({
-        enableDyadPro: enabled,
+        enableGearPro: enabled,
       });
     } catch (error: any) {
-      showError(`Error toggling Dyad Pro: ${error}`);
+      showError(`Error toggling Gear Pro: ${error}`);
     } finally {
       setIsSaving(false);
     }
@@ -241,7 +241,7 @@ export function ProviderSettingsPage({ provider }: ProviderSettingsPageProps) {
   }
 
   // Handle case where provider is not found (e.g., invalid ID in URL)
-  if (!providerData && !isDyad) {
+  if (!providerData && !isGear) {
     return (
       <div className="min-h-screen px-8 py-4">
         <div className="max-w-4xl mx-auto">
@@ -278,7 +278,7 @@ export function ProviderSettingsPage({ provider }: ProviderSettingsPageProps) {
           isLoading={settingsLoading}
           hasFreeTier={hasFreeTier}
           providerWebsiteUrl={providerWebsiteUrl}
-          isDyad={isDyad}
+          isGear={isGear}
           onBackClick={() => router.history.back()}
         />
 
@@ -306,22 +306,22 @@ export function ProviderSettingsPage({ provider }: ProviderSettingsPageProps) {
             onApiKeyInputChange={setApiKeyInput}
             onSaveKey={handleSaveKey}
             onDeleteKey={handleDeleteKey}
-            isDyad={isDyad}
+            isGear={isGear}
             updateSettings={updateSettings}
           />
         )}
 
-        {isDyad && !settingsLoading && (
+        {isGear && !settingsLoading && (
           <div className="mt-6 flex items-center justify-between p-4 bg-(--background-lightest) rounded-lg border">
             <div>
-              <h3 className="font-medium">Enable Dyad Pro</h3>
+              <h3 className="font-medium">Enable Gear Pro</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Toggle to enable Dyad Pro
+                Toggle to enable Gear Pro
               </p>
             </div>
             <Switch
-              checked={settings?.enableDyadPro}
-              onCheckedChange={handleToggleDyadPro}
+              checked={settings?.enableGearPro}
+              onCheckedChange={handleToggleGearPro}
               disabled={isSaving}
             />
           </div>

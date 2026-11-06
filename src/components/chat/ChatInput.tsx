@@ -43,7 +43,7 @@ import {
 import { isPreviewOpenAtom } from "@/atoms/viewAtoms";
 import { useRunApp } from "@/hooks/useRunApp";
 import { AutoApproveSwitch } from "../AutoApproveSwitch";
-import { usePostHog } from "posthog-js/react";
+import { usePostHog } from "@/lib/telemetry";
 import { CodeHighlight } from "./CodeHighlight";
 import { TokenBar } from "./TokenBar";
 import {
@@ -244,7 +244,7 @@ export function ChatInput({ chatId }: { chatId?: number }) {
         <ChatErrorBox
           onDismiss={dismissError}
           error={error}
-          isDyadProEnabled={settings.enableDyadPro ?? false}
+          isGearProEnabled={settings.enableGearPro ?? false}
         />
       )}
       {/* Display loading or error state for proposal */}
@@ -305,7 +305,7 @@ export function ChatInput({ chatId }: { chatId?: number }) {
               onChange={setInputValue}
               onSubmit={handleSubmit}
               onPaste={handlePaste}
-              placeholder="Ask Dyad to build..."
+              placeholder="Ask Gear to build..."
               excludeCurrentApp={true}
             />
 

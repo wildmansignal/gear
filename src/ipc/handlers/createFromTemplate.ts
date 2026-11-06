@@ -89,7 +89,7 @@ async function cloneRepo(repoUrl: string): Promise<string> {
         url: apiUrl,
         method: "GET",
         headers: {
-          "User-Agent": "Dyad", // GitHub API requires a User-Agent
+          "User-Agent": "Gear", // GitHub API requires a User-Agent
           Accept: "application/vnd.github.v3+json",
         },
       });

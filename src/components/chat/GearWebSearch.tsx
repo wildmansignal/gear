@@ -2,13 +2,13 @@ import type React from "react";
 import type { ReactNode } from "react";
 import { Globe } from "lucide-react";
 
-interface DyadWebSearchProps {
+interface GearWebSearchProps {
   children?: ReactNode;
   node?: any;
   query?: string;
 }
 
-export const DyadWebSearch: React.FC<DyadWebSearchProps> = ({
+export const GearWebSearch: React.FC<GearWebSearchProps> = ({
   children,
   node: _node,
   query: queryProp,

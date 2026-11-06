@@ -1,14 +1,11 @@
 import { ipcMain } from "electron";
-import { streamText, Tool } from "ai";
+import { streamText } from "ai";
 import { readSettings } from "../../main/settings";
 
 import log from "electron-log";
 import { safeSend } from "../utils/safe_sender";
-import {
-  createOpenAI,
-  openai,
-  OpenAIResponsesProviderOptions,
-} from "@ai-sdk/openai";
+import { createOpenAI } from "@ai-sdk/openai";
+import { gatewayBase } from "../../brand";
 import { StartHelpChatParams } from "../ipc_types";
 
 const logger = log.scope("help-bot");
@@ -47,24 +44,14 @@ export function registerHelpBotHandlers() {
         const settings = await readSettings();
         const apiKey = settings.providerSettings?.["auto"]?.apiKey?.value;
         const provider = createOpenAI({
-          baseURL: "https://helpchat.dyad.sh/v1",
+          baseURL: `${gatewayBase()}/helpchat/v1`,
           apiKey,
         });
 
         let assistantContent = "";
 
         const stream = streamText({
-          model: provider.responses("gpt-5-nano"),
-          providerOptions: {
-            openai: {
-              reasoningSummary: "auto",
-            } satisfies OpenAIResponsesProviderOptions,
-          },
-          tools: {
-            web_search_preview: openai.tools.webSearchPreview({
-              searchContextSize: "high",
-            }) as Tool,
-          },
+          model: provider.chat("gear-help"),
           messages: updatedHistory as any,
           maxRetries: 1,
           onError: (error) => {

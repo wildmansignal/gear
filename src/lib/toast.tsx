@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { PostHog } from "posthog-js";
+import type { TelemetryClient as PostHog } from "@/lib/telemetry";
 import React from "react";
 import { CustomErrorToast } from "../components/CustomErrorToast";
 import { InputRequestToast } from "../components/InputRequestToast";
@@ -146,7 +146,7 @@ export const showExtraFilesToast = ({
 }) => {
   if (error) {
     showError(
-      `Error committing files ${files.join(", ")} changed outside of Dyad: ${error}`,
+      `Error committing files ${files.join(", ")} changed outside of Gear: ${error}`,
     );
     posthog.capture("extra-files:error", {
       files: files,
@@ -154,7 +154,7 @@ export const showExtraFilesToast = ({
     });
   } else {
     showWarning(
-      `Files changed outside of Dyad have automatically been committed:
+      `Files changed outside of Gear have automatically been committed:
     \n\n${files.join("\n")}`,
     );
     posthog.capture("extra-files:warning", {

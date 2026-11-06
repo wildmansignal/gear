@@ -5,7 +5,6 @@ import googleLogo from "../../assets/ai-logos/google-logo.svg";
 // @ts-ignore
 import anthropicLogo from "../../assets/ai-logos/anthropic-logo.svg";
 import { IpcClient } from "@/ipc/ipc_client";
-import { useState } from "react";
 import { KeyRound } from "lucide-react";
 
 import { useSettings } from "@/hooks/useSettings";
@@ -16,34 +15,23 @@ export function ProBanner() {
   const { settings } = useSettings();
   const { userBudget } = useUserBudgetInfo();
 
-  const [selectedBanner] = useState<"ai" | "smart" | "turbo">(() => {
-    const options = ["ai", "smart", "turbo"] as const;
-    return options[Math.floor(Math.random() * options.length)];
-  });
-
-  if (settings?.enableDyadPro || userBudget) {
+  if (settings?.enableGearPro || userBudget) {
     return (
       <div className="mt-6 max-w-2xl mx-auto">
-        <ManageDyadProButton />
+        <ManageGearProButton />
       </div>
     );
   }
 
   return (
     <div className="mt-6 max-w-2xl mx-auto">
-      {selectedBanner === "ai" ? (
-        <AiAccessBanner />
-      ) : selectedBanner === "smart" ? (
-        <SmartContextBanner />
-      ) : (
-        <TurboBanner />
-      )}
-      <SetupDyadProButton />
+      <AiAccessBanner />
+      <SetupGearProButton />
     </div>
   );
 }
 
-export function ManageDyadProButton() {
+export function ManageGearProButton() {
   return (
     <Button
       variant="outline"
@@ -51,17 +39,17 @@ export function ManageDyadProButton() {
       className="w-full mt-4 bg-(--background-lighter) text-primary"
       onClick={() => {
         IpcClient.getInstance().openExternalUrl(
-          "https://academy.dyad.sh/subscription",
+          "https://danplants.com/gear#pro",
         );
       }}
     >
       <KeyRound aria-hidden="true" />
-      Manage Dyad Pro subscription
+      Manage Gear Pro subscription
     </Button>
   );
 }
 
-export function SetupDyadProButton() {
+export function SetupGearProButton() {
   return (
     <Button
       variant="outline"
@@ -69,12 +57,12 @@ export function SetupDyadProButton() {
       className="w-full mt-4 bg-(--background-lighter) text-primary"
       onClick={() => {
         IpcClient.getInstance().openExternalUrl(
-          "https://academy.dyad.sh/settings",
+          "https://danplants.com/gear#pro",
         );
       }}
     >
       <KeyRound aria-hidden="true" />
-      Already have Dyad Pro? Add your key
+      Already have Gear Pro? Add your key
     </Button>
   );
 }
@@ -85,7 +73,7 @@ export function AiAccessBanner() {
       className="w-full py-2 sm:py-2.5 md:py-3 rounded-lg bg-gradient-to-br from-white via-indigo-50 to-sky-100 dark:from-indigo-700 dark:via-indigo-700 dark:to-indigo-900 flex items-center justify-center relative overflow-hidden ring-1 ring-inset ring-black/5 dark:ring-white/10 shadow-sm cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-[1px]"
       onClick={() => {
         IpcClient.getInstance().openExternalUrl(
-          "https://www.dyad.sh/pro?utm_source=dyad-app&utm_medium=app&utm_campaign=in-app-banner-ai-access",
+          "https://danplants.com/gear#pro",
         );
       }}
     >
@@ -104,10 +92,10 @@ export function AiAccessBanner() {
           </div>
           <button
             type="button"
-            aria-label="Subscribe to Dyad Pro"
+            aria-label="Subscribe to Gear Pro"
             className="inline-flex items-center rounded-md bg-white/90 text-indigo-800 hover:bg-white shadow px-3 py-1.5 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-white/50"
           >
-            Get Dyad Pro
+            Get Gear Pro
           </button>
         </div>
 
@@ -151,7 +139,7 @@ export function SmartContextBanner() {
       className="w-full py-2 sm:py-2.5 md:py-3 rounded-lg bg-gradient-to-br from-emerald-50 via-emerald-100 to-emerald-200 dark:from-emerald-700 dark:via-emerald-700 dark:to-emerald-900 flex items-center justify-center relative overflow-hidden ring-1 ring-inset ring-emerald-900/10 dark:ring-white/10 shadow-sm cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-[1px]"
       onClick={() => {
         IpcClient.getInstance().openExternalUrl(
-          "https://www.dyad.sh/pro?utm_source=dyad-app&utm_medium=app&utm_campaign=in-app-banner-smart-context",
+          "https://danplants.com/gear#pro",
         );
       }}
     >
@@ -175,10 +163,10 @@ export function SmartContextBanner() {
           </div>
           <button
             type="button"
-            aria-label="Get Dyad Pro"
+            aria-label="Get Gear Pro"
             className="inline-flex items-center rounded-md bg-white/90 text-emerald-800 hover:bg-white shadow px-3 py-1.5 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-white/50"
           >
-            Get Dyad Pro
+            Get Gear Pro
           </button>
         </div>
       </div>
@@ -192,7 +180,7 @@ export function TurboBanner() {
       className="w-full py-2 sm:py-2.5 md:py-3 rounded-lg bg-gradient-to-br from-rose-50 via-rose-100 to-rose-200 dark:from-rose-800 dark:via-fuchsia-800 dark:to-rose-800 flex items-center justify-center relative overflow-hidden ring-1 ring-inset ring-rose-900/10 dark:ring-white/5 shadow-sm cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-[1px]"
       onClick={() => {
         IpcClient.getInstance().openExternalUrl(
-          "https://www.dyad.sh/pro?utm_source=dyad-app&utm_medium=app&utm_campaign=in-app-banner-turbo",
+          "https://danplants.com/gear#pro",
         );
       }}
     >
@@ -216,10 +204,10 @@ export function TurboBanner() {
           </div>
           <button
             type="button"
-            aria-label="Get Dyad Pro"
+            aria-label="Get Gear Pro"
             className="inline-flex items-center rounded-md bg-white/90 text-rose-800 hover:bg-white shadow px-3 py-1.5 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-white/50"
           >
-            Get Dyad Pro
+            Get Gear Pro
           </button>
         </div>
       </div>

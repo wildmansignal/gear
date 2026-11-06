@@ -4,7 +4,6 @@ import { registerIpcHandlers } from "./ipc/ipc_host";
 import dotenv from "dotenv";
 // @ts-ignore
 import started from "electron-squirrel-startup";
-import { updateElectronApp, UpdateSourceType } from "update-electron-app";
 import log from "electron-log";
 import {
   getSettingsFilePath,
@@ -12,8 +11,9 @@ import {
   writeSettings,
 } from "./main/settings";
 import { handleSupabaseOAuthReturn } from "./supabase_admin/supabase_return_handler";
-import { handleDyadProReturn } from "./main/pro";
+import { handleGearProReturn } from "./main/pro";
 import { IS_TEST_BUILD } from "./ipc/utils/test_utils";
+import { BRAND } from "./brand";
 import { BackupManager } from "./backup_manager";
 import { getDatabasePath, initializeDatabase } from "./db";
 import { UserSettings } from "./lib/schemas";
@@ -43,12 +43,12 @@ if (started) {
 // https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app#main-process-mainjs
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient("dyad", process.execPath, [
+    app.setAsDefaultProtocolClient(BRAND.protocol, process.execPath, [
       path.resolve(process.argv[1]),
     ]);
   }
 } else {
-  app.setAsDefaultProtocolClient("dyad");
+  app.setAsDefaultProtocolClient(BRAND.protocol);
 }
 
 export async function onReady() {
@@ -66,23 +66,10 @@ export async function onReady() {
   await onFirstRunMaybe(settings);
   createWindow();
 
-  logger.info("Auto-update enabled=", settings.enableAutoUpdate);
-  if (settings.enableAutoUpdate) {
-    // Technically we could just pass the releaseChannel directly to the host,
-    // but this is more explicit and falls back to stable if there's an unknown
-    // release channel.
-    const postfix = settings.releaseChannel === "beta" ? "beta" : "stable";
-    const host = `https://api.dyad.sh/v1/update/${postfix}`;
-    logger.info("Auto-update release channel=", postfix);
-    updateElectronApp({
-      logger,
-      updateSource: {
-        type: UpdateSourceType.ElectronPublicUpdateService,
-        repo: "dyad-sh/dyad",
-        host,
-      },
-    }); // additional configuration options available
-  }
+  // Gear does not auto-update: unsigned builds cannot use Squirrel.Mac and the
+  // updater would otherwise point at the upstream project. New versions are
+  // downloaded from the Gear site instead.
+  logger.info("Auto-update disabled; downloads at", BRAND.siteUrl);
 }
 
 export async function onFirstRunMaybe(settings: UserSettings) {
@@ -116,7 +103,7 @@ async function promptMoveToApplicationsFolder(): Promise<void> {
     type: "question",
     buttons: ["Move to Applications Folder", "Do Not Move"],
     defaultId: 0,
-    message: "Move to Applications Folder? (required for auto-update)",
+    message: "Move to Applications Folder?",
   });
 
   if (response === 0) {
@@ -271,7 +258,7 @@ function handleDeepLinkReturn(url: string) {
   if (parsed.protocol !== "dyad:") {
     dialog.showErrorBox(
       "Invalid Protocol",
-      `Expected dyad://, got ${parsed.protocol}. Full URL: ${url}`,
+      `Expected ${BRAND.protocol}://, got ${parsed.protocol}. Full URL: ${url}`,
     );
     return;
   }
@@ -311,14 +298,14 @@ function handleDeepLinkReturn(url: string) {
     });
     return;
   }
-  // dyad://dyad-pro-return?key=123&budget_reset_at=2025-05-26T16:31:13.492000Z&max_budget=100
-  if (parsed.hostname === "dyad-pro-return") {
+  // dyad://gear-pro-return?key=123&budget_reset_at=2025-05-26T16:31:13.492000Z&max_budget=100
+  if (parsed.hostname === "gear-pro-return") {
     const apiKey = parsed.searchParams.get("key");
     if (!apiKey) {
       dialog.showErrorBox("Invalid URL", "Expected key");
       return;
     }
-    handleDyadProReturn({
+    handleGearProReturn({
       apiKey,
     });
     // Send message to renderer to trigger re-render

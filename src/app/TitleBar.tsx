@@ -10,7 +10,7 @@ import { providerSettingsRoute } from "@/routes/settings/providers/$provider";
 import { cn } from "@/lib/utils";
 import { useDeepLink } from "@/contexts/DeepLinkContext";
 import { useEffect, useState } from "react";
-import { DyadProSuccessDialog } from "@/components/DyadProSuccessDialog";
+import { GearProSuccessDialog } from "@/components/GearProSuccessDialog";
 import { useTheme } from "@/contexts/ThemeContext";
 import { IpcClient } from "@/ipc/ipc_client";
 import { useUserBudgetInfo } from "@/hooks/useUserBudgetInfo";
@@ -45,16 +45,16 @@ export const TitleBar = () => {
     checkPlatform();
   }, []);
 
-  const showDyadProSuccessDialog = () => {
+  const showGearProSuccessDialog = () => {
     setIsSuccessDialogOpen(true);
   };
 
   const { lastDeepLink, clearLastDeepLink } = useDeepLink();
   useEffect(() => {
     const handleDeepLink = async () => {
-      if (lastDeepLink?.type === "dyad-pro-return") {
+      if (lastDeepLink?.type === "gear-pro-return") {
         await refreshSettings();
-        showDyadProSuccessDialog();
+        showGearProSuccessDialog();
         clearLastDeepLink();
       }
     };
@@ -73,15 +73,15 @@ export const TitleBar = () => {
     }
   };
 
-  const isDyadPro = !!settings?.providerSettings?.auto?.apiKey?.value;
-  const isDyadProEnabled = Boolean(settings?.enableDyadPro);
+  const isGearPro = !!settings?.providerSettings?.auto?.apiKey?.value;
+  const isGearProEnabled = Boolean(settings?.enableGearPro);
 
   return (
     <>
       <div className="@container z-11 w-full h-11 bg-(--sidebar) absolute top-0 left-0 app-region-drag flex items-center">
         <div className={`${showWindowControls ? "pl-2" : "pl-18"}`}></div>
 
-        <img src={logo} alt="Dyad Logo" className="w-6 h-6 mr-0.5" />
+        <img src={logo} alt="Gear Logo" className="w-6 h-6 mr-0.5" />
         <Button
           data-testid="title-bar-app-name-button"
           variant="outline"
@@ -93,7 +93,7 @@ export const TitleBar = () => {
         >
           {displayText}
         </Button>
-        {isDyadPro && <DyadProButton isDyadProEnabled={isDyadProEnabled} />}
+        {isGearPro && <GearProButton isGearProEnabled={isGearProEnabled} />}
 
         {/* Preview Header */}
         {location.pathname === "/chat" && (
@@ -105,7 +105,7 @@ export const TitleBar = () => {
         {showWindowControls && <WindowsControls />}
       </div>
 
-      <DyadProSuccessDialog
+      <GearProSuccessDialog
         isOpen={isSuccessDialogOpen}
         onClose={() => setIsSuccessDialogOpen(false)}
       />
@@ -194,10 +194,10 @@ function WindowsControls() {
   );
 }
 
-export function DyadProButton({
-  isDyadProEnabled,
+export function GearProButton({
+  isGearProEnabled,
 }: {
-  isDyadProEnabled: boolean;
+  isGearProEnabled: boolean;
 }) {
   const { navigate } = useRouter();
   const { userBudget } = useUserBudgetInfo();
@@ -213,12 +213,12 @@ export function DyadProButton({
       variant="outline"
       className={cn(
         "hidden @2xl:block ml-1 no-app-region-drag h-7 bg-indigo-600 text-white dark:bg-indigo-600 dark:text-white text-xs px-2 pt-1 pb-1",
-        !isDyadProEnabled && "bg-zinc-600 dark:bg-zinc-600",
+        !isGearProEnabled && "bg-zinc-600 dark:bg-zinc-600",
       )}
       size="sm"
     >
-      {isDyadProEnabled ? "Pro" : "Pro (off)"}
-      {userBudget && isDyadProEnabled && (
+      {isGearProEnabled ? "Pro" : "Pro (off)"}
+      {userBudget && isGearProEnabled && (
         <AICreditStatus userBudget={userBudget} />
       )}
     </Button>

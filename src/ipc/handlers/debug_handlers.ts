@@ -11,7 +11,7 @@ import { extractCodebase } from "../../utils/codebase";
 import { db } from "../../db";
 import { chats, apps } from "../../db/schema";
 import { eq } from "drizzle-orm";
-import { getDyadAppPath } from "../../paths/paths";
+import { getGearAppPath } from "../../paths/paths";
 import { LargeLanguageModel } from "@/lib/schemas";
 import { validateChatContext } from "../utils/context_paths_utils";
 
@@ -51,7 +51,7 @@ async function getSystemDebugInfo({
     console.error("Failed to get node path:", err);
   }
 
-  // Get Dyad version from package.json
+  // Get Gear version from package.json
   const packageJsonPath = path.resolve(__dirname, "..", "..", "package.json");
   let dyadVersion = "unknown";
   try {
@@ -106,7 +106,7 @@ async function getSystemDebugInfo({
     selectedLanguageModel:
       serializeModelForDebug(settings.selectedModel) || "unknown",
     telemetryConsent: settings.telemetryConsent || "unknown",
-    telemetryUrl: "https://us.i.posthog.com", // Hardcoded from renderer.tsx
+    telemetryUrl: "none (Gear ships without analytics)",
     dyadVersion,
     platform: process.platform,
     architecture: arch(),
@@ -175,7 +175,7 @@ export function registerDebugHandlers() {
         }
 
         // Extract codebase
-        const appPath = getDyadAppPath(app.path);
+        const appPath = getGearAppPath(app.path);
         const codebase = (
           await extractCodebase({
             appPath,

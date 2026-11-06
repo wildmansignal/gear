@@ -47,7 +47,7 @@ or to provide a custom fetch implementation for e.g. testing.
   settings: UserSettings;
 }
 
-export interface DyadEngineProvider {
+export interface GearEngineProvider {
   /**
 Creates a model for text generation.
 */
@@ -65,9 +65,9 @@ Creates a chat model for text generation.
   ): LanguageModelV2;
 }
 
-export function createDyadEngine(
+export function createGearEngine(
   options: ExampleProviderSettings,
-): DyadEngineProvider {
+): GearEngineProvider {
   const baseURL = withoutTrailingSlash(options.baseURL);
   logger.info("creating dyad engine with baseURL", baseURL);
 
@@ -77,7 +77,7 @@ export function createDyadEngine(
   const getHeaders = () => ({
     Authorization: `Bearer ${loadApiKey({
       apiKey: options.apiKey,
-      environmentVariableName: "DYAD_PRO_API_KEY",
+      environmentVariableName: "GEAR_PRO_API_KEY",
       description: "Example API key",
     })}`,
     ...options.headers,
@@ -171,7 +171,7 @@ export function createDyadEngine(
             headers: {
               ...init.headers,
               ...(modifiedRequestId && {
-                "X-Dyad-Request-Id": modifiedRequestId,
+                "X-Gear-Request-Id": modifiedRequestId,
               }),
             },
             body: JSON.stringify(parsedBody),

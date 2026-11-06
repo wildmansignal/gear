@@ -11,8 +11,7 @@ import { isPreviewOpenAtom } from "@/atoms/viewAtoms";
 import { useState, useEffect, useCallback } from "react";
 import { useStreamChat } from "@/hooks/useStreamChat";
 import { HomeChatInput } from "@/components/chat/HomeChatInput";
-import { usePostHog } from "posthog-js/react";
-import { PrivacyBanner } from "@/components/TelemetryBanner";
+import { usePostHog } from "@/lib/telemetry";
 import { INSPIRATION_PROMPTS } from "@/prompts/inspiration_prompts";
 import { useAppVersion } from "@/hooks/useAppVersion";
 import {
@@ -251,7 +250,6 @@ export default function HomePage() {
         </div>
         <ProBanner />
       </div>
-      <PrivacyBanner />
 
       {/* Release Notes Dialog */}
       <Dialog open={releaseNotesOpen} onOpenChange={setReleaseNotesOpen}>

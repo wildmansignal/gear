@@ -1,0 +1,16 @@
+Gear
+Copyright (c) 2026 Dan Plants / Catalyva LLC
+
+This product is a modified version of Dyad (https://github.com/dyad-sh/dyad),
+Copyright (c) Dyad contributors, used under the Apache License, Version 2.0.
+Gear is based on the Dyad v0.26.0 source tree (released 2025-10-24), which is
+licensed in full under Apache 2.0. No code from the later "src/pro" directory
+(Functional Source License) is included.
+
+Changes from upstream include: product name, branding and icons; removal of
+analytics; removal of the auto-updater; Gear Pro served by Gear's own gateway;
+Supabase connected with personal access tokens; packaging and release
+configuration. See CHANGES.md for details.
+
+"Dyad" is a trademark of Dyad Tech, Inc. Gear is not affiliated with or
+endorsed by Dyad.

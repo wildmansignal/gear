@@ -29,8 +29,8 @@ export const useCopyToClipboard = () => {
 
   const copyMessageContent = async (messageContent: string) => {
     try {
-      // Use the same parsing logic as DyadMarkdownParser but convert to clean text
-      const formattedContent = convertDyadContentToMarkdown(messageContent);
+      // Use the same parsing logic as GearMarkdownParser but convert to clean text
+      const formattedContent = convertGearContentToMarkdown(messageContent);
 
       // Copy to clipboard
       await navigator.clipboard.writeText(formattedContent);
@@ -50,11 +50,11 @@ export const useCopyToClipboard = () => {
     }
   };
 
-  // Convert Dyad content to clean markdown using the same parsing logic as DyadMarkdownParser
-  const convertDyadContentToMarkdown = (content: string): string => {
+  // Convert Gear content to clean markdown using the same parsing logic as GearMarkdownParser
+  const convertGearContentToMarkdown = (content: string): string => {
     if (!content) return "";
 
-    // Use the same parsing functions from DyadMarkdownParser
+    // Use the same parsing functions from GearMarkdownParser
     const contentPieces = parseCustomTags(content);
 
     let result = "";
@@ -76,7 +76,7 @@ export const useCopyToClipboard = () => {
       .trim();
   };
 
-  // Convert individual custom tags to markdown (reuse the same logic from DyadMarkdownParser)
+  // Convert individual custom tags to markdown (reuse the same logic from GearMarkdownParser)
   const convertCustomTagToMarkdown = (tagInfo: any): string => {
     const { tag, attributes, content } = tagInfo;
 
@@ -193,7 +193,7 @@ export const useCopyToClipboard = () => {
     }
   };
 
-  // Reuse the same parsing functions from DyadMarkdownParser but simplified
+  // Reuse the same parsing functions from GearMarkdownParser but simplified
   const parseCustomTags = (content: string) => {
     const { processedContent } = preprocessUnclosedTags(content);
 

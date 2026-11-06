@@ -8,7 +8,7 @@ import { useAttachments } from "@/hooks/useAttachments";
 import { AttachmentsList } from "./AttachmentsList";
 import { DragDropOverlay } from "./DragDropOverlay";
 import { FileAttachmentDropdown } from "./FileAttachmentDropdown";
-import { usePostHog } from "posthog-js/react";
+import { usePostHog } from "@/lib/telemetry";
 import { HomeSubmitOptions } from "@/pages/home";
 import { ChatInputControls } from "../ChatInputControls";
 import { LexicalChatInput } from "./LexicalChatInput";
@@ -83,7 +83,7 @@ export function HomeChatInput({
               onChange={setInputValue}
               onSubmit={handleCustomSubmit}
               onPaste={handlePaste}
-              placeholder="Ask Dyad to build..."
+              placeholder="Ask Gear to build..."
               disabled={isStreaming}
               excludeCurrentApp={false}
             />

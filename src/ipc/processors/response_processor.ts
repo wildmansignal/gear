@@ -2,7 +2,7 @@ import { db } from "../../db";
 import { chats, messages } from "../../db/schema";
 import { and, eq } from "drizzle-orm";
 import fs from "node:fs";
-import { getDyadAppPath } from "../../paths/paths";
+import { getGearAppPath } from "../../paths/paths";
 import path from "node:path";
 import git from "isomorphic-git";
 import { safeJoin } from "../utils/path_utils";
@@ -20,11 +20,11 @@ import { gitCommit } from "../utils/git_utils";
 import { readSettings } from "@/main/settings";
 import { writeMigrationFile } from "../utils/file_utils";
 import {
-  getDyadWriteTags,
-  getDyadRenameTags,
-  getDyadDeleteTags,
-  getDyadAddDependencyTags,
-  getDyadExecuteSqlTags,
+  getGearWriteTags,
+  getGearRenameTags,
+  getGearDeleteTags,
+  getGearAddDependencyTags,
+  getGearExecuteSqlTags,
 } from "../utils/dyad_tag_parser";
 import { storeDbTimestampAtCurrentVersion } from "../utils/neon_timestamp_utils";
 
@@ -100,7 +100,7 @@ export async function processFullResponseActions(
   }
 
   const settings: UserSettings = readSettings();
-  const appPath = getDyadAppPath(chatWithApp.app.path);
+  const appPath = getGearAppPath(chatWithApp.app.path);
   const writtenFiles: string[] = [];
   const renamedFiles: string[] = [];
   const deletedFiles: string[] = [];
@@ -111,12 +111,12 @@ export async function processFullResponseActions(
 
   try {
     // Extract all tags
-    const dyadWriteTags = getDyadWriteTags(fullResponse);
-    const dyadRenameTags = getDyadRenameTags(fullResponse);
-    const dyadDeletePaths = getDyadDeleteTags(fullResponse);
-    const dyadAddDependencyPackages = getDyadAddDependencyTags(fullResponse);
+    const dyadWriteTags = getGearWriteTags(fullResponse);
+    const dyadRenameTags = getGearRenameTags(fullResponse);
+    const dyadDeletePaths = getGearDeleteTags(fullResponse);
+    const dyadAddDependencyPackages = getGearAddDependencyTags(fullResponse);
     const dyadExecuteSqlQueries = chatWithApp.app.supabaseProjectId
-      ? getDyadExecuteSqlTags(fullResponse)
+      ? getGearExecuteSqlTags(fullResponse)
       : [];
 
     const message = await db.query.messages.findFirst({
@@ -427,7 +427,7 @@ export async function processFullResponseActions(
         try {
           commitHash = await gitCommit({
             path: appPath,
-            message: message + " + extra files edited outside of Dyad",
+            message: message + " + extra files edited outside of Gear",
             amend: true,
           });
           logger.log(
@@ -435,7 +435,7 @@ export async function processFullResponseActions(
           );
         } catch (error) {
           // Just log, but don't throw an error because the user can still
-          // commit these changes outside of Dyad if needed.
+          // commit these changes outside of Gear if needed.
           logger.error(
             `Failed to commit changes outside of dyad: ${uncommittedFiles.join(
               ", ",

@@ -4,6 +4,7 @@ import { createLoggedHandler } from "./safe_handle";
 import { readSettings } from "../../main/settings"; // Assuming settings are read this way
 import { UserBudgetInfo, UserBudgetInfoSchema } from "../ipc_types";
 import { IS_TEST_BUILD } from "../utils/test_utils";
+import { gatewayBase } from "../../brand";
 
 const logger = log.scope("pro_handlers");
 const handle = createLoggedHandler(logger);
@@ -25,11 +26,11 @@ export function registerProHandlers() {
     const apiKey = settings.providerSettings?.auto?.apiKey?.value;
 
     if (!apiKey) {
-      logger.error("LLM Gateway API key (Dyad Pro) is not configured.");
+      logger.error("LLM Gateway API key (Gear Pro) is not configured.");
       return null;
     }
 
-    const url = "https://llm-gateway.dyad.sh/user/info";
+    const url = `${gatewayBase()}/user/info`;
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,

@@ -10,11 +10,11 @@ import remarkGfm from "remark-gfm";
 export function ChatErrorBox({
   onDismiss,
   error,
-  isDyadProEnabled,
+  isGearProEnabled,
 }: {
   onDismiss: () => void;
   error: string;
-  isDyadProEnabled: boolean;
+  isGearProEnabled: boolean;
 }) {
   if (error.includes("doesn't have a free quota tier")) {
     return (
@@ -22,10 +22,10 @@ export function ChatErrorBox({
         {error}
         <span className="ml-1">
           <ExternalLink
-            href="https://dyad.sh/pro?utm_source=dyad-app&utm_medium=app&utm_campaign=free-quota-error"
+            href="https://danplants.com/gear#pro"
             variant="primary"
           >
-            Access with Dyad Pro
+            Access with Gear Pro
           </ExternalLink>
         </span>{" "}
         or switch to another model.
@@ -45,13 +45,13 @@ export function ChatErrorBox({
         {error}
         <div className="mt-2 space-y-2 space-x-2">
           <ExternalLink
-            href="https://dyad.sh/pro?utm_source=dyad-app&utm_medium=app&utm_campaign=rate-limit-error"
+            href="https://danplants.com/gear#pro"
             variant="primary"
           >
-            Upgrade to Dyad Pro
+            Upgrade to Gear Pro
           </ExternalLink>
 
-          <ExternalLink href="https://dyad.sh/docs/help/ai-rate-limit">
+          <ExternalLink href="https://danplants.com/gear#help">
             Troubleshooting guide
           </ExternalLink>
         </div>
@@ -63,25 +63,25 @@ export function ChatErrorBox({
     return (
       <ChatInfoContainer onDismiss={onDismiss}>
         <span>
-          Looks like you don't have a valid Dyad Pro key.{" "}
+          Looks like you don't have a valid Gear Pro key.{" "}
           <ExternalLink
-            href="https://dyad.sh/pro?utm_source=dyad-app&utm_medium=app&utm_campaign=invalid-pro-key-error"
+            href="https://danplants.com/gear#pro"
             variant="primary"
           >
-            Upgrade to Dyad Pro
+            Upgrade to Gear Pro
           </ExternalLink>{" "}
           today.
         </span>
       </ChatInfoContainer>
     );
   }
-  if (isDyadProEnabled && error.includes("ExceededBudget:")) {
+  if (isGearProEnabled && error.includes("ExceededBudget:")) {
     return (
       <ChatInfoContainer onDismiss={onDismiss}>
         <span>
-          You have used all of your Dyad AI credits this month.{" "}
+          You have used all of your Gear AI credits this month.{" "}
           <ExternalLink
-            href="https://academy.dyad.sh/subscription?utm_source=dyad-app&utm_medium=app&utm_campaign=exceeded-budget-error"
+            href="https://danplants.com/gear#pro"
             variant="primary"
           >
             Reload or upgrade your subscription
@@ -99,16 +99,16 @@ export function ChatErrorBox({
     <ChatErrorContainer onDismiss={onDismiss}>
       {error}
       <div className="mt-2 space-y-2 space-x-2">
-        {!isDyadProEnabled && (
+        {!isGearProEnabled && (
           <ExternalLink
-            href="https://dyad.sh/pro?utm_source=dyad-app&utm_medium=app&utm_campaign=general-error"
+            href="https://danplants.com/gear#pro"
             variant="primary"
           >
-            Upgrade to Dyad Pro
+            Upgrade to Gear Pro
           </ExternalLink>
         )}
 
-        <ExternalLink href="https://www.dyad.sh/docs/faq">
+        <ExternalLink href="https://danplants.com/gear#help">
           Read docs
         </ExternalLink>
       </div>

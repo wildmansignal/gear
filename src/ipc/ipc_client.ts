@@ -270,7 +270,7 @@ export class IpcClient {
     return IpcClient.instance;
   }
 
-  public async restartDyad(): Promise<void> {
+  public async restartGear(): Promise<void> {
     await this.ipcRenderer.invoke("restart-dyad");
   }
 

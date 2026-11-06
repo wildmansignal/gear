@@ -22,7 +22,7 @@ import {
   SUPABASE_AVAILABLE_SYSTEM_PROMPT,
   SUPABASE_NOT_AVAILABLE_SYSTEM_PROMPT,
 } from "../../prompts/supabase_prompt";
-import { getDyadAppPath } from "../../paths/paths";
+import { getGearAppPath } from "../../paths/paths";
 import { readSettings } from "../../main/settings";
 import type { ChatResponseEnd, ChatStreamParams } from "../ipc_types";
 import {
@@ -60,10 +60,10 @@ import { generateProblemReport } from "../processors/tsc";
 import { createProblemFixPrompt } from "@/shared/problem_prompt";
 import { AsyncVirtualFileSystem } from "../../../shared/VirtualFilesystem";
 import {
-  getDyadAddDependencyTags,
-  getDyadWriteTags,
-  getDyadDeleteTags,
-  getDyadRenameTags,
+  getGearAddDependencyTags,
+  getGearWriteTags,
+  getGearDeleteTags,
+  getGearRenameTags,
 } from "../utils/dyad_tag_parser";
 import { fileExists } from "../utils/file_utils";
 import { FileUploadsState } from "../utils/file_uploads_state";
@@ -174,14 +174,14 @@ async function processStreamChunks({
         inThinkingBlock = true;
       }
 
-      chunk += escapeDyadTags(part.text);
+      chunk += escapeGearTags(part.text);
     } else if (part.type === "tool-call") {
       const { serverName, toolName } = parseMcpToolKey(part.toolName);
-      const content = escapeDyadTags(JSON.stringify(part.input));
+      const content = escapeGearTags(JSON.stringify(part.input));
       chunk = `<dyad-mcp-tool-call server="${serverName}" tool="${toolName}">\n${content}\n</dyad-mcp-tool-call>\n`;
     } else if (part.type === "tool-result") {
       const { serverName, toolName } = parseMcpToolKey(part.toolName);
-      const content = escapeDyadTags(part.output);
+      const content = escapeGearTags(part.output);
       chunk = `<dyad-mcp-tool-result server="${serverName}" tool="${toolName}">\n${content}\n</dyad-mcp-tool-result>\n`;
     }
 
@@ -345,7 +345,7 @@ export function registerChatStreamHandlers() {
         try {
           const componentFileContent = await readFile(
             path.join(
-              getDyadAppPath(chat.app.path),
+              getGearAppPath(chat.app.path),
               req.selectedComponent.relativePath,
             ),
             "utf8",
@@ -387,8 +387,8 @@ ${componentSnippet}
         })
         .returning();
       const settings = readSettings();
-      // Only Dyad Pro requests have request ids.
-      if (settings.enableDyadPro) {
+      // Only Gear Pro requests have request ids.
+      if (settings.enableGearPro) {
         // Generate requestId early so it can be saved with the message
         dyadRequestId = uuidv4();
       }
@@ -444,7 +444,7 @@ ${componentSnippet}
         const { modelClient, isEngineEnabled, isSmartContextEnabled } =
           await getModelClient(settings.selectedModel, settings);
 
-        const appPath = getDyadAppPath(updatedChat.app.path);
+        const appPath = getGearAppPath(updatedChat.app.path);
         // When we don't have smart context enabled, we
         // only include the selected component's file for codebase context.
         //
@@ -558,7 +558,7 @@ ${componentSnippet}
         }
 
         let systemPrompt = constructSystemPrompt({
-          aiRules: await readAiRules(getDyadAppPath(updatedChat.app.path)),
+          aiRules: await readAiRules(getGearAppPath(updatedChat.app.path)),
           chatMode:
             settings.selectedChatMode === "agent"
               ? "build"
@@ -679,7 +679,7 @@ This conversation includes one or more image attachments. When the user uploads 
           // and eats up extra tokens.
           content:
             settings.selectedChatMode === "ask"
-              ? removeDyadTags(removeNonEssentialTags(msg.content))
+              ? removeGearTags(removeNonEssentialTags(msg.content))
               : removeNonEssentialTags(msg.content),
         }));
 
@@ -896,7 +896,7 @@ This conversation includes one or more image attachments. When the user uploads 
               },
             },
             systemPromptOverride: constructSystemPrompt({
-              aiRules: await readAiRules(getDyadAppPath(updatedChat.app.path)),
+              aiRules: await readAiRules(getGearAppPath(updatedChat.app.path)),
               chatMode: "agent",
             }),
             files: files,
@@ -942,11 +942,11 @@ This conversation includes one or more image attachments. When the user uploads 
           if (
             !abortController.signal.aborted &&
             settings.selectedChatMode !== "ask" &&
-            hasUnclosedDyadWrite(fullResponse)
+            hasUnclosedGearWrite(fullResponse)
           ) {
             let continuationAttempts = 0;
             while (
-              hasUnclosedDyadWrite(fullResponse) &&
+              hasUnclosedGearWrite(fullResponse) &&
               continuationAttempts < 2 &&
               !abortController.signal.aborted
             ) {
@@ -979,7 +979,7 @@ This conversation includes one or more image attachments. When the user uploads 
               }
             }
           }
-          const addDependencies = getDyadAddDependencyTags(fullResponse);
+          const addDependencies = getGearAddDependencyTags(fullResponse);
           if (
             !abortController.signal.aborted &&
             // If there are dependencies, we don't want to auto-fix problems
@@ -993,7 +993,7 @@ This conversation includes one or more image attachments. When the user uploads 
               // IF auto-fix is enabled
               let problemReport = await generateProblemReport({
                 fullResponse,
-                appPath: getDyadAppPath(updatedChat.app.path),
+                appPath: getGearAppPath(updatedChat.app.path),
               });
 
               let autoFixAttempts = 0;
@@ -1020,15 +1020,15 @@ ${problemReport.problems
                 const problemFixPrompt = createProblemFixPrompt(problemReport);
 
                 const virtualFileSystem = new AsyncVirtualFileSystem(
-                  getDyadAppPath(updatedChat.app.path),
+                  getGearAppPath(updatedChat.app.path),
                   {
                     fileExists: (fileName: string) => fileExists(fileName),
                     readFile: (fileName: string) => readFileWithCache(fileName),
                   },
                 );
-                const writeTags = getDyadWriteTags(fullResponse);
-                const renameTags = getDyadRenameTags(fullResponse);
-                const deletePaths = getDyadDeleteTags(fullResponse);
+                const writeTags = getGearWriteTags(fullResponse);
+                const renameTags = getGearRenameTags(fullResponse);
+                const deletePaths = getGearDeleteTags(fullResponse);
                 virtualFileSystem.applyResponseChanges({
                   deletePaths,
                   renameTags,
@@ -1091,7 +1091,7 @@ ${problemReport.problems
 
                 problemReport = await generateProblemReport({
                   fullResponse,
-                  appPath: getDyadAppPath(updatedChat.app.path),
+                  appPath: getGearAppPath(updatedChat.app.path),
                 });
               }
             } catch (error) {
@@ -1411,12 +1411,12 @@ export function removeProblemReportTags(text: string): string {
   return text.replace(problemReportRegex, "").trim();
 }
 
-export function removeDyadTags(text: string): string {
+export function removeGearTags(text: string): string {
   const dyadRegex = /<dyad-[^>]*>[\s\S]*?<\/dyad-[^>]*>/g;
   return text.replace(dyadRegex, "").trim();
 }
 
-export function hasUnclosedDyadWrite(text: string): boolean {
+export function hasUnclosedGearWrite(text: string): boolean {
   // Find the last opening dyad-write tag
   const openRegex = /<dyad-write[^>]*>/g;
   let lastOpenIndex = -1;
@@ -1438,7 +1438,7 @@ export function hasUnclosedDyadWrite(text: string): boolean {
   return !hasClosingTag;
 }
 
-function escapeDyadTags(text: string): string {
+function escapeGearTags(text: string): string {
   // Escape dyad tags in reasoning content
   // We are replacing the opening tag with a look-alike character
   // to avoid issues where thinking content includes dyad tags

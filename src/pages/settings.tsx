@@ -5,7 +5,6 @@ import ConfirmationDialog from "@/components/ConfirmationDialog";
 import { IpcClient } from "@/ipc/ipc_client";
 import { showSuccess, showError } from "@/lib/toast";
 import { AutoApproveSwitch } from "@/components/AutoApproveSwitch";
-import { TelemetrySwitch } from "@/components/TelemetrySwitch";
 import { MaxChatTurnsSelector } from "@/components/MaxChatTurnsSelector";
 import { ThinkingBudgetSelector } from "@/components/ThinkingBudgetSelector";
 import { useSettings } from "@/hooks/useSettings";
@@ -20,8 +19,6 @@ import { SupabaseIntegration } from "@/components/SupabaseIntegration";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { AutoFixProblemsSwitch } from "@/components/AutoFixProblemsSwitch";
-import { AutoUpdateSwitch } from "@/components/AutoUpdateSwitch";
-import { ReleaseChannelSelector } from "@/components/ReleaseChannelSelector";
 import { NeonIntegration } from "@/components/NeonIntegration";
 import { RuntimeModeSelector } from "@/components/RuntimeModeSelector";
 import { NodePathSelector } from "@/components/NodePathSelector";
@@ -86,30 +83,6 @@ export default function SettingsPage() {
             className="bg-white dark:bg-gray-800 rounded-xl shadow-sm"
           >
             <ProviderSettingsGrid />
-          </div>
-
-          <div className="space-y-6">
-            <div
-              id="telemetry"
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6"
-            >
-              <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                Telemetry
-              </h2>
-              <div className="space-y-2">
-                <TelemetrySwitch />
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  This records anonymous usage data to improve the product.
-                </div>
-              </div>
-
-              <div className="mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400">
-                <span className="mr-2 font-medium">Telemetry ID:</span>
-                <span className="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-gray-800 dark:text-gray-200 font-mono">
-                  {settings ? settings.telemetryUserId : "n/a"}
-                </span>
-              </div>
-            </div>
           </div>
 
           {/* Integrations Section */}
@@ -263,18 +236,6 @@ export function GeneralSettings({ appVersion }: { appVersion: string | null }) {
             ))}
           </div>
         </div>
-      </div>
-
-      <div className="space-y-1 mt-4">
-        <AutoUpdateSwitch />
-        <div className="text-sm text-gray-500 dark:text-gray-400">
-          This will automatically update the app when new versions are
-          available.
-        </div>
-      </div>
-
-      <div className="mt-4">
-        <ReleaseChannelSelector />
       </div>
 
       <div className="mt-4">

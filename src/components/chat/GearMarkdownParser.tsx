@@ -1,31 +1,31 @@
 import React, { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 
-import { DyadWrite } from "./DyadWrite";
-import { DyadRename } from "./DyadRename";
-import { DyadDelete } from "./DyadDelete";
-import { DyadAddDependency } from "./DyadAddDependency";
-import { DyadExecuteSql } from "./DyadExecuteSql";
-import { DyadAddIntegration } from "./DyadAddIntegration";
-import { DyadEdit } from "./DyadEdit";
-import { DyadCodebaseContext } from "./DyadCodebaseContext";
-import { DyadThink } from "./DyadThink";
+import { GearWrite } from "./GearWrite";
+import { GearRename } from "./GearRename";
+import { GearDelete } from "./GearDelete";
+import { GearAddDependency } from "./GearAddDependency";
+import { GearExecuteSql } from "./GearExecuteSql";
+import { GearAddIntegration } from "./GearAddIntegration";
+import { GearEdit } from "./GearEdit";
+import { GearCodebaseContext } from "./GearCodebaseContext";
+import { GearThink } from "./GearThink";
 import { CodeHighlight } from "./CodeHighlight";
 import { useAtomValue } from "jotai";
 import { isStreamingByIdAtom, selectedChatIdAtom } from "@/atoms/chatAtoms";
 import { CustomTagState } from "./stateTypes";
-import { DyadOutput } from "./DyadOutput";
-import { DyadProblemSummary } from "./DyadProblemSummary";
+import { GearOutput } from "./GearOutput";
+import { GearProblemSummary } from "./GearProblemSummary";
 import { IpcClient } from "@/ipc/ipc_client";
-import { DyadMcpToolCall } from "./DyadMcpToolCall";
-import { DyadMcpToolResult } from "./DyadMcpToolResult";
-import { DyadWebSearchResult } from "./DyadWebSearchResult";
-import { DyadWebSearch } from "./DyadWebSearch";
-import { DyadRead } from "./DyadRead";
+import { GearMcpToolCall } from "./GearMcpToolCall";
+import { GearMcpToolResult } from "./GearMcpToolResult";
+import { GearWebSearchResult } from "./GearWebSearchResult";
+import { GearWebSearch } from "./GearWebSearch";
+import { GearRead } from "./GearRead";
 import { mapActionToButton } from "./ChatInput";
 import { SuggestedAction } from "@/lib/schemas";
 
-interface DyadMarkdownParserProps {
+interface GearMarkdownParserProps {
   content: string;
 }
 
@@ -74,9 +74,9 @@ export const VanillaMarkdownParser = ({ content }: { content: string }) => {
 };
 
 /**
- * Custom component to parse markdown content with Dyad-specific tags
+ * Custom component to parse markdown content with Gear-specific tags
  */
-export const DyadMarkdownParser: React.FC<DyadMarkdownParserProps> = ({
+export const GearMarkdownParser: React.FC<GearMarkdownParserProps> = ({
   content,
 }) => {
   const chatId = useAtomValue(selectedChatIdAtom);
@@ -296,7 +296,7 @@ function renderCustomTag(
   switch (tag) {
     case "dyad-read":
       return (
-        <DyadRead
+        <GearRead
           node={{
             properties: {
               path: attributes.path || "",
@@ -304,21 +304,21 @@ function renderCustomTag(
           }}
         >
           {content}
-        </DyadRead>
+        </GearRead>
       );
     case "dyad-web-search":
       return (
-        <DyadWebSearch
+        <GearWebSearch
           node={{
             properties: {},
           }}
         >
           {content}
-        </DyadWebSearch>
+        </GearWebSearch>
       );
     case "dyad-web-search-result":
       return (
-        <DyadWebSearchResult
+        <GearWebSearchResult
           node={{
             properties: {
               state: getState({ isStreaming, inProgress }),
@@ -326,11 +326,11 @@ function renderCustomTag(
           }}
         >
           {content}
-        </DyadWebSearchResult>
+        </GearWebSearchResult>
       );
     case "think":
       return (
-        <DyadThink
+        <GearThink
           node={{
             properties: {
               state: getState({ isStreaming, inProgress }),
@@ -338,11 +338,11 @@ function renderCustomTag(
           }}
         >
           {content}
-        </DyadThink>
+        </GearThink>
       );
     case "dyad-write":
       return (
-        <DyadWrite
+        <GearWrite
           node={{
             properties: {
               path: attributes.path || "",
@@ -352,12 +352,12 @@ function renderCustomTag(
           }}
         >
           {content}
-        </DyadWrite>
+        </GearWrite>
       );
 
     case "dyad-rename":
       return (
-        <DyadRename
+        <GearRename
           node={{
             properties: {
               from: attributes.from || "",
@@ -366,12 +366,12 @@ function renderCustomTag(
           }}
         >
           {content}
-        </DyadRename>
+        </GearRename>
       );
 
     case "dyad-delete":
       return (
-        <DyadDelete
+        <GearDelete
           node={{
             properties: {
               path: attributes.path || "",
@@ -379,12 +379,12 @@ function renderCustomTag(
           }}
         >
           {content}
-        </DyadDelete>
+        </GearDelete>
       );
 
     case "dyad-add-dependency":
       return (
-        <DyadAddDependency
+        <GearAddDependency
           node={{
             properties: {
               packages: attributes.packages || "",
@@ -392,12 +392,12 @@ function renderCustomTag(
           }}
         >
           {content}
-        </DyadAddDependency>
+        </GearAddDependency>
       );
 
     case "dyad-execute-sql":
       return (
-        <DyadExecuteSql
+        <GearExecuteSql
           node={{
             properties: {
               state: getState({ isStreaming, inProgress }),
@@ -406,12 +406,12 @@ function renderCustomTag(
           }}
         >
           {content}
-        </DyadExecuteSql>
+        </GearExecuteSql>
       );
 
     case "dyad-add-integration":
       return (
-        <DyadAddIntegration
+        <GearAddIntegration
           node={{
             properties: {
               provider: attributes.provider || "",
@@ -419,12 +419,12 @@ function renderCustomTag(
           }}
         >
           {content}
-        </DyadAddIntegration>
+        </GearAddIntegration>
       );
 
     case "dyad-edit":
       return (
-        <DyadEdit
+        <GearEdit
           node={{
             properties: {
               path: attributes.path || "",
@@ -434,12 +434,12 @@ function renderCustomTag(
           }}
         >
           {content}
-        </DyadEdit>
+        </GearEdit>
       );
 
     case "dyad-codebase-context":
       return (
-        <DyadCodebaseContext
+        <GearCodebaseContext
           node={{
             properties: {
               files: attributes.files || "",
@@ -448,12 +448,12 @@ function renderCustomTag(
           }}
         >
           {content}
-        </DyadCodebaseContext>
+        </GearCodebaseContext>
       );
 
     case "dyad-mcp-tool-call":
       return (
-        <DyadMcpToolCall
+        <GearMcpToolCall
           node={{
             properties: {
               serverName: attributes.server || "",
@@ -462,12 +462,12 @@ function renderCustomTag(
           }}
         >
           {content}
-        </DyadMcpToolCall>
+        </GearMcpToolCall>
       );
 
     case "dyad-mcp-tool-result":
       return (
-        <DyadMcpToolResult
+        <GearMcpToolResult
           node={{
             properties: {
               serverName: attributes.server || "",
@@ -476,24 +476,24 @@ function renderCustomTag(
           }}
         >
           {content}
-        </DyadMcpToolResult>
+        </GearMcpToolResult>
       );
 
     case "dyad-output":
       return (
-        <DyadOutput
+        <GearOutput
           type={attributes.type as "warning" | "error"}
           message={attributes.message}
         >
           {content}
-        </DyadOutput>
+        </GearOutput>
       );
 
     case "dyad-problem-report":
       return (
-        <DyadProblemSummary summary={attributes.summary}>
+        <GearProblemSummary summary={attributes.summary}>
           {content}
-        </DyadProblemSummary>
+        </GearProblemSummary>
       );
 
     case "dyad-chat-summary":

@@ -1,4 +1,4 @@
-import { isDyadProEnabled, type LargeLanguageModel } from "@/lib/schemas";
+import { isGearProEnabled, type LargeLanguageModel } from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -112,14 +112,14 @@ export function ModelPicker() {
       ? modelsByProviders["auto"].filter((model) => {
           if (
             settings &&
-            !isDyadProEnabled(settings) &&
+            !isGearProEnabled(settings) &&
             ["turbo", "value"].includes(model.apiName)
           ) {
             return false;
           }
           if (
             settings &&
-            isDyadProEnabled(settings) &&
+            isGearProEnabled(settings) &&
             model.apiName === "free"
           ) {
             return false;
@@ -151,7 +151,7 @@ export function ModelPicker() {
     const provider = providers?.find((p) => p.id === providerId);
     return !(provider && provider.secondary);
   });
-  if (settings && isDyadProEnabled(settings)) {
+  if (settings && isGearProEnabled(settings)) {
     primaryProviders.unshift(["auto", TURBO_MODELS]);
   }
   const secondaryProviders = providerEntries.filter(([providerId, models]) => {
@@ -260,11 +260,11 @@ export function ModelPicker() {
             {/* Primary providers as submenus */}
             {primaryProviders.map(([providerId, models]) => {
               models = models.filter((model) => {
-                // Don't show free models if Dyad Pro is enabled because
-                // we will use the paid models (in Dyad Pro backend) which
+                // Don't show free models if Gear Pro is enabled because
+                // we will use the paid models (in Gear Pro backend) which
                 // don't have the free limitations.
                 if (
-                  isDyadProEnabled(settings) &&
+                  isGearProEnabled(settings) &&
                   model.apiName.endsWith(":free")
                 ) {
                   return false;
@@ -274,7 +274,7 @@ export function ModelPicker() {
               const provider = providers?.find((p) => p.id === providerId);
               const providerDisplayName =
                 provider?.id === "auto"
-                  ? "Dyad Turbo"
+                  ? "Gear Turbo"
                   : (provider?.name ?? providerId);
               return (
                 <DropdownMenuSub key={providerId}>
@@ -284,7 +284,7 @@ export function ModelPicker() {
                         <span>{providerDisplayName}</span>
                         {provider?.type === "cloud" &&
                           !provider?.secondary &&
-                          isDyadProEnabled(settings) && (
+                          isGearProEnabled(settings) && (
                             <span className="text-[10px] bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 bg-[length:200%_100%] animate-[shimmer_5s_ease-in-out_infinite] text-white px-1.5 py-0.5 rounded-full font-medium">
                               Pro
                             </span>

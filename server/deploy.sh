@@ -3,7 +3,7 @@
 set -euo pipefail
 HOST=${HOST:-root@167.172.142.0}
 DOMAIN=${DOMAIN:-gear.167-172-142-0.sslip.io}
-PORT=${PORT:-5500}
+PORT=${PORT:-5561}   # 5500 is taken by The Wild chain on this droplet
 DIR=/opt/gear-gateway
 HERE="$(cd "$(dirname "$0")" && pwd)"
 
@@ -44,6 +44,11 @@ UNIT
 systemctl daemon-reload
 systemctl enable --now gear-gateway
 systemctl restart gear-gateway
+if [ -f /etc/nginx/sites-available/gear-gateway ]; then
+  # keep certbot's edits, just point the proxy at the current port
+  sed -i "s#proxy_pass http://127.0.0.1:[0-9]*;#proxy_pass http://127.0.0.1:$PORT;#" /etc/nginx/sites-available/gear-gateway
+  nginx -t && systemctl reload nginx
+fi
 if [ ! -f /etc/nginx/sites-enabled/gear-gateway ]; then
 cat > /etc/nginx/sites-available/gear-gateway <<NGINX
 server {
@@ -66,7 +71,7 @@ nginx -t && systemctl reload nginx
 certbot --nginx -d $DOMAIN --non-interactive --agree-tos --register-unsafely-without-email --redirect || echo "certbot failed; site is on http only"
 fi
 sleep 1
-curl -s http://127.0.0.1:$PORT/health || true
+for i in 1 2 3 4 5 6 7 8 9 10; do curl -sf http://127.0.0.1:$PORT/health && break; sleep 1; done || true
 echo
 systemctl --no-pager --lines=5 status gear-gateway | head -12
 REMOTE
